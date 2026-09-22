@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Approach — {{TICKET_ID}}</title>
+  <style>
+    :root { --bg: #f8fafc; --card: #fff; --text: #1e293b; --accent: #2563eb; --muted: #64748b; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 2rem; max-width: 900px; margin-inline: auto; }
+    h1 { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; color: #334155; }
+    .card { background: var(--card); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #e2e8f0; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f1f5f9; }
+    .flow { background: #eff6ff; border-left: 4px solid var(--accent); padding: 1rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Development approach — {{TICKET_ID}}</h1>
+  <p class="muted">Stakeholder summary · Generated {{ISO_DATE}} · Status: draft</p>
+
+  <div class="card">
+    <h2>Executive summary</h2>
+    <p><!-- 3–5 sentences --></p>
+  </div>
+
+  <div class="card">
+    <h2>Problem &amp; goals</h2>
+    <p><!-- From requirements.md problem statement --></p>
+  </div>
+
+  <div class="card">
+    <h2>Proposed approach</h2>
+    <p><!-- High-level solution narrative --></p>
+  </div>
+
+  <div class="card">
+    <h2>Architecture overview</h2>
+    <!-- Mermaid or diagram placeholder -->
+    <pre><!-- Component diagram --></pre>
+  </div>
+
+  <div class="card">
+    <h2>Key functionality flows</h2>
+    <div class="flow">
+      <strong>FUN-001 — Flow name</strong>
+      <p><!-- Simplified steps for stakeholders --></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Data &amp; integrations</h2>
+    <table>
+      <tr><th>System</th><th>Role</th></tr>
+      <tr><td></td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Risks &amp; mitigations</h2>
+    <ul><li></li></ul>
+  </div>
+
+  <div class="card">
+    <h2>Out of scope</h2>
+    <ul><li></li></ul>
+  </div>
+
+  <div class="card">
+    <h2>Next steps</h2>
+    <ol><li>Implementation (tasks T-001…)</li><li>Testing &amp; review</li></ol>
+  </div>
+</body>
+</html>

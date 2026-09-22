@@ -1,0 +1,30 @@
+{
+  "ticketId": "SUPPORT-2847",
+  "createdAt": "2026-09-13T08:38:54Z",
+  "pipelineVersion": 4,
+  "pipelineDoc": "docs/spec-pipeline/PIPELINE.md",
+  "specRevision": 1,
+  "workflow": "requirement-spec-approach-implement-docs-verify-test-review-fix",
+  "stages": {
+    "bootstrap": { "status": "complete" },
+    "agent1": { "status": "approved", "label": "specification", "branch": "spec/SUPPORT-2847/stage-01-agent1" },
+    "agent1b": { "status": "approved", "label": "stakeholder_approach", "branch": "spec/SUPPORT-2847/stage-01-agent1" },
+    "agent2": { "status": "approved", "label": "plan_and_implementation", "branch": "spec/SUPPORT-2847/stage-02-agent2" },
+    "agent2b": { "status": "approved", "label": "implementation_documentation", "branch": "spec/SUPPORT-2847/stage-02-agent2" },
+    "agent2c": { "status": "approved", "label": "functional_completeness", "branch": "spec/SUPPORT-2847/stage-02-agent2" },
+    "agent3": { "status": "approved", "label": "testing", "branch": "spec/SUPPORT-2847/stage-03-agent3" },
+    "agent4": { "status": "approved", "label": "review", "branch": "spec/SUPPORT-2847/stage-04-agent4" },
+    "agent5": { "status": "approved", "label": "security", "branch": "spec/SUPPORT-2847/stage-05-agent5" },
+    "final": { "status": "ready_for_merge" }
+  },
+  "traceability": {
+    "acceptanceCriteria": ["AC-001", "AC-002", "AC-003", "AC-004", "AC-005", "AC-006", "AC-007", "AC-008", "AC-009", "AC-010", "AC-011"],
+    "tasks": ["T-001", "T-002", "T-003", "T-004", "T-005", "T-006", "T-007", "T-008", "T-009"],
+    "testCases": ["TC-001", "TC-002", "TC-003", "TC-004", "TC-005", "TC-006", "TC-007", "TC-008", "TC-009", "TC-010", "TC-011"]
+  },
+  "openspec": {
+    "changeSlug": "support-2847",
+    "changeDir": "openspec/changes/support-2847"
+  },
+  "notes": "Pipeline executed per docs/spec-pipeline/prompts/agent-*.md — stages 1→1b→MR01→2→2b→2c→MR02→3→4→5"
+}

@@ -1,0 +1,19 @@
+{
+  "name": "cursor-spec-pipeline-workspace",
+  "private": true,
+  "description": "Tooling for OpenSpec CLI + pipeline scripts (not the ticket app)",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "setup": "bash scripts/setup-integrations.sh",
+    "openspec:init": "bash scripts/with-node.sh openspec init --tools cursor --no-copilot-cloud",
+    "openspec:update": "bash scripts/with-node.sh openspec update",
+    "openspec:list": "bash scripts/with-node.sh openspec list",
+    "openspec:validate": "bash scripts/with-node.sh openspec validate",
+    "specstory:index": "python3 scripts/specstory-index.py"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "latest"
+  }
+}

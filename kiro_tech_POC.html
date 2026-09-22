@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIRO Multi-Agent Spec Driven SDLC Pipeline</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; font-size: 11px; }
+  .page { width: 1400px; margin: 0 auto; background: #fff; padding: 16px; }
+
+  /* Header */
+  .main-title { text-align: center; font-size: 22px; font-weight: 900; color: #1a1a2e; letter-spacing: 1px; text-transform: uppercase; }
+  .sub-title { text-align: center; font-size: 12px; color: #444; margin-bottom: 14px; }
+
+  /* Top 7-column grid (no day labels) */
+  .top-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 12px; }
+  .day-card { border-radius: 6px; padding: 8px; color: #fff; }
+  .day-card h3 { font-size: 10.5px; font-weight: 700; text-transform: uppercase; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 5px; margin-bottom: 6px; line-height: 1.3; }
+  .day-card ul { list-style: disc; padding-left: 13px; }
+  .day-card ul li { margin-bottom: 3px; line-height: 1.35; font-size: 9.5px; }
+  .day-card .deliverable { margin-top: 7px; border-top: 1px solid rgba(255,255,255,0.4); padding-top: 5px; }
+  .day-card .deliverable strong { display: block; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .day-card .deliverable p { font-size: 9px; line-height: 1.3; }
+
+  .d1 { background: #1565c0; }
+  .d2 { background: #2e7d32; }
+  .d3 { background: #4a148c; }
+  .d4 { background: #e65100; }
+  .d5 { background: #00695c; }
+  .d6 { background: #1565c0; }
+  .d7 { background: #2e7d32; }
+
+  /* Pipeline Flow */
+  .section-header { background: #1a1a2e; color: #fff; text-align: center; font-size: 13px; font-weight: 700; padding: 6px; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .pipeline-flow { display: flex; align-items: flex-start; gap: 4px; margin-bottom: 12px; overflow-x: auto; }
+  .pf-box { border-radius: 6px; padding: 8px; font-size: 9.5px; min-width: 120px; flex: 1; }
+  .pf-box h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.15); padding-bottom: 4px; }
+  .pf-box ul { list-style: disc; padding-left: 12px; }
+  .pf-box ul li { margin-bottom: 2px; line-height: 1.3; }
+  .pf-box .artifact { margin-top: 5px; font-weight: 700; font-size: 9px; color: #c62828; }
+  .arrow { font-size: 20px; color: #555; align-self: center; flex-shrink: 0; }
+
+  .pf-input { background: #e3f2fd; border: 2px solid #1565c0; }
+  .pf-bootstrap { background: #e8f5e9; border: 2px solid #2e7d32; }
+  .pf-a1 { background: #e3f2fd; border: 2px solid #1565c0; }
+  .pf-a2 { background: #e0f2f1; border: 2px solid #00695c; }
+  .pf-a3 { background: #fff3e0; border: 2px solid #e65100; }
+  .pf-a4 { background: #ede7f6; border: 2px solid #4a148c; }
+  .pf-a5 { background: #ffebee; border: 2px solid #c62828; }
+  .pf-output { background: #f1f8e9; border: 2px solid #558b2f; }
+
+  /* Hook labels */
+  .hook-row { display: flex; gap: 4px; margin-bottom: 10px; padding-left: 0; }
+  .hook-item { flex: 1; text-align: center; font-size: 8.5px; color: #555; background: #f5f5f5; border-radius: 4px; padding: 3px 4px; border: 1px dashed #aaa; }
+
+  /* Bottom 4-column sections */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .bottom-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .bottom-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .info-box { border-radius: 6px; padding: 10px; font-size: 9.5px; }
+  .info-box h4 { font-size: 11px; font-weight: 700; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 2px solid currentColor; text-transform: uppercase; }
+  .info-box ul { list-style: disc; padding-left: 13px; }
+  .info-box ul li { margin-bottom: 3px; line-height: 1.4; }
+
+  .box-dark-blue { background: #e3f2fd; border: 1px solid #1565c0; color: #0d47a1; }
+  .box-green { background: #e8f5e9; border: 1px solid #2e7d32; color: #1b5e20; }
+  .box-teal { background: #e0f2f1; border: 1px solid #00695c; color: #004d40; }
+  .box-orange { background: #fff3e0; border: 1px solid #e65100; color: #bf360c; }
+  .box-purple { background: #ede7f6; border: 1px solid #4a148c; color: #311b92; }
+  .box-red { background: #ffebee; border: 1px solid #c62828; color: #b71c1c; }
+  .box-gray { background: #f5f5f5; border: 1px solid #757575; color: #212121; }
+  .box-navy { background: #e8eaf6; border: 1px solid #283593; color: #1a237e; }
+
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; font-size: 9px; }
+  .skill-tag { background: #fff; border: 1px solid #ccc; border-radius: 3px; padding: 2px 5px; }
+
+  .steering-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; font-size: 9px; margin-top: 5px; }
+  .steering-item { background: #fff8e1; border: 1px solid #fbc02d; border-radius: 3px; padding: 2px 5px; }
+
+  /* Legend */
+  .legend-item { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; font-size: 9px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* End state */
+  .end-state { display: flex; align-items: center; justify-content: center; gap: 8px; background: #1a1a2e; border-radius: 8px; padding: 10px; color: #fff; font-size: 11px; font-weight: 600; }
+  .end-step { background: rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 9px; }
+  .end-arrow { color: #aaa; font-size: 16px; }
+  .end-deploy { background: #2e7d32; border-radius: 6px; padding: 8px 14px; font-size: 11px; font-weight: 700; }
+
+  /* Human checkpoints */
+  .checkpoint-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .cp-item { display: flex; gap: 6px; align-items: flex-start; font-size: 9px; padding: 3px; }
+  .cp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 1px; }
+
+  .agent-label { font-size: 8px; font-weight: 700; background: rgba(0,0,0,0.08); border-radius: 3px; padding: 1px 4px; display: inline-block; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="background:#e8f5e9;border:1px solid #2e7d32;border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:10px;line-height:1.45;color:#1b5e20;">
+    <strong>Unified Cursor pipeline (this repo):</strong> one flow — <code>docs/spec-pipeline/PIPELINE.md</code> — bootstrap → 5 agents → MR gates → hooks → merge. OpenSpec, prompt templates, and MCP are <em>stages inside</em> that pipeline, not separate paths. Entry: <code>./scripts/spec-bootstrap.sh &lt;ID&gt;</code> · Rules: <code>.cursor/rules/spec-pipeline.mdc</code> · Hooks: <code>.cursor/hooks.json</code>.
+  </div>
+
+  <!-- HEADER -->
+  <div class="main-title">KIRO MULTI-AGENT SPEC DRIVEN SDLC PIPELINE – IMPLEMENTATION PLAN</div>
+  <div class="sub-title">Goal: Build an autonomous 5-Agent SDLC pipeline in Kiro where every Jira ticket goes through understanding, development, testing, review and security audit.</div>
+
+  <!-- TOP GRID — NO DAY LABELS -->
+  <div class="top-grid">
+
+    <div class="day-card d1">
+      <h3>FOUNDATION &amp;<br>GOVERNANCE SETUP</h3>
+      <ul>
+        <li>Create .kiro/ structure (agents, prompts, steering, hooks)</li>
+        <li>Write global governance AGENTS.md</li>
+        <li>Create shared steering files (product, coding standards, security, testing, etc.)</li>
+        <li>Create Skills Library for Agent2 (implementation skills)</li>
+        <li>Define workflow principles and artifact contract</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>Governance layer, steering and skills library ready</p>
+      </div>
+    </div>
+
+    <div class="day-card d2">
+      <h3>CUSTOM AGENT<br>CREATION</h3>
+      <ul>
+        <li>Create 5 agent definition files (JSON) in .kiro/agents/</li>
+        <li>Attach prompts and resources (AGENTS.md, steering/**, specs/**)</li>
+        <li>Create role prompt files for all agents in .kiro/prompts/</li>
+        <li>Map skills/** only for Agent2 (development agent)</li>
+        <li>Validate agents in Kiro</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>All 5 agents registered with prompts and resources</p>
+      </div>
+    </div>
+
+    <div class="day-card d3">
+      <h3>MASTER BOOTSTRAP<br>ORCHESTRATOR</h3>
+      <ul>
+        <li>Implement /spec &lt;Jira-ID&gt; command</li>
+        <li>Validate Jira ticket via MCP</li>
+        <li>Create /specs/&lt;ticket-id&gt;/ folder with standard artifacts</li>
+        <li>Pre-create all artifact files</li>
+        <li>Create spec-manifest.json (metadata)</li>
+        <li>Trigger Agent1 automatically</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>One-command spec bootstrap and Agent1 trigger ready</p>
+      </div>
+    </div>
+
+    <div class="day-card d4">
+      <h3>HOOK AUTOMATION<br>PIPELINE</h3>
+      <ul>
+        <li>Create hooks file spec-driven-pipeline.yml</li>
+        <li>Define file based triggers for agent handoff</li>
+        <li>Hook1: spec_created → A1</li>
+        <li>Hook2: requirements.md → A2</li>
+        <li>Hook3: implementation-notes.md → A3</li>
+        <li>Hook4: test-cases.md → A4</li>
+        <li>Hook5: review-report.md → A5</li>
+        <li>Test first 2 hooks end-to-end</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>Automatic agent chaining (Hook based) functional</p>
+      </div>
+    </div>
+
+    <div class="day-card d5">
+      <h3>AGENT2 SKILLS ENGINE<br>&amp; INTELLIGENCE</h3>
+      <ul>
+        <li>Build dynamic skills resolver logic for Agent2</li>
+        <li>Map requirement keywords to relevant skills files</li>
+        <li>Agent2 auto-loads required skills (mongo, caching, exception handling, etc.)</li>
+        <li>Enhance Agent2 prompt for context-aware development</li>
+        <li>Test skill selection on sample requirements</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>Agent2 uses relevant skills dynamically based on need</p>
+      </div>
+    </div>
+
+    <div class="day-card d6">
+      <h3>END-TO-END TESTING<br>WITH REAL TICKET</h3>
+      <ul>
+        <li>Run full pipeline on real Jira ticket</li>
+        <li>Validate outputs of all 5 agents</li>
+        <li>Check artifact quality at each stage</li>
+        <li>Fix prompt gaps, hook issues, formatting issues</li>
+        <li>Collect feedback and improve</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>Full pipeline tested with real Jira ticket</p>
+      </div>
+    </div>
+
+    <div class="day-card d7">
+      <h3>STABILIZATION &amp;<br>DEMO PREPARATION</h3>
+      <ul>
+        <li>Refine prompts and outputs</li>
+        <li>Add human approval checkpoints</li>
+        <li>Generate final-summary.md</li>
+        <li>Prepare documentation (usage guide, process flow, limitations, future scope)</li>
+        <li>Internal demo to senior stakeholders</li>
+      </ul>
+      <div class="deliverable">
+        <strong>Deliverable</strong>
+        <p>MVP ready for demo and internal adoption</p>
+      </div>
+    </div>
+
+  </div><!-- /top-grid -->
+
+  <!-- PIPELINE FLOW SECTION -->
+  <div class="section-header">END-TO-END PIPELINE FLOW (AUTONOMOUS)</div>
+
+  <div class="pipeline-flow">
+    <!-- User Input -->
+    <div class="pf-box pf-input">
+      <h4>USER INPUT</h4>
+      <p style="text-align:center; font-size: 11px; margin: 6px 0;">👤</p>
+      <p style="text-align:center; background:#1565c0; color:#fff; border-radius:4px; padding:4px; font-size:9px;">/spec PWCGSTUAT-30009<br>(Jira Ticket ID)</p>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Bootstrap Orchestrator -->
+    <div class="pf-box pf-bootstrap">
+      <h4>BOOTSTRAP ORCHESTRATOR</h4>
+      <ul>
+        <li>✅ Validate Jira Ticket</li>
+        <li>✅ Create Spec Folder</li>
+        <li>✅ Initialize Artifacts</li>
+        <li>✅ Trigger Agent1</li>
+      </ul>
+      <div class="artifact">/specs/PWCGSTUAT-30009/</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Agent 1 -->
+    <div class="pf-box pf-a1">
+      <div class="agent-label">AGENT 1 · TICKET CONTEXT BUILDER</div>
+      <ul>
+        <li>Understand requirement</li>
+        <li>Identify impacted areas</li>
+        <li>Derive acceptance criteria</li>
+        <li>Identify risks &amp; dependencies</li>
+      </ul>
+      <div class="artifact">requirements.md<br>context-analysis.md</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Agent 2 -->
+    <div class="pf-box pf-a2">
+      <div class="agent-label">AGENT 2 · IMPLEMENTATION ENGINEER (DEVELOPER)</div>
+      <ul>
+        <li>Create technical design</li>
+        <li>Implement code changes</li>
+        <li>Use relevant skills from skills library</li>
+        <li>Optimize, handle exceptions, caching, performance, etc.</li>
+      </ul>
+      <div class="artifact">design.md | tasks.md<br>implementation-notes.md<br>(Code Changes)</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Agent 3 -->
+    <div class="pf-box pf-a3">
+      <div class="agent-label">AGENT 3 · TEST ENGINEER</div>
+      <ul>
+        <li>Derive test scenarios</li>
+        <li>Write unit tests</li>
+        <li>Write integration tests</li>
+        <li>Ensure regression coverage</li>
+      </ul>
+      <div class="artifact">test-cases.md<br>(Test Code)</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Agent 4 -->
+    <div class="pf-box pf-a4">
+      <div class="agent-label">AGENT 4 · PRINCIPAL REVIEWER</div>
+      <ul>
+        <li>Validate requirement coverage</li>
+        <li>Validate implementation correctness</li>
+        <li>Validate test coverage</li>
+        <li>Check code quality, performance, standards</li>
+        <li>Identify gaps &amp; risks</li>
+      </ul>
+      <div class="artifact">review-report.md</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Agent 5 -->
+    <div class="pf-box pf-a5">
+      <div class="agent-label">AGENT 5 · SECURITY AUDITOR</div>
+      <ul>
+        <li>Security &amp; vulnerability scan</li>
+        <li>OWASP Top 10 checks</li>
+        <li>Dependency vulnerability check</li>
+        <li>Auth &amp; input validation check</li>
+        <li>Logging &amp; data leakage check</li>
+      </ul>
+      <div class="artifact">security-audit.md<br>vulnerability-fixes.md</div>
+    </div>
+    <div class="arrow">→</div>
+
+    <!-- Final Output -->
+    <div class="pf-box pf-output">
+      <h4>FINAL OUTPUT</h4>
+      <p style="text-align:center; font-size:20px;">✅</p>
+      <p style="text-align:center; font-size:9px; font-weight:700;">final-summary.md<br>(Ready for Approval &amp; Merge)</p>
+    </div>
+  </div>
+
+  <!-- HOOK ROW -->
+  <div class="hook-row">
+    <div style="flex:0 0 120px"></div>
+    <div style="flex:0 0 20px"></div>
+    <div class="hook-item">Hook1<br>spec_created</div>
+    <div style="flex:0 0 20px"></div>
+    <div class="hook-item">Hook2<br>requirements.md created/updated</div>
+    <div style="flex:0 0 20px"></div>
+    <div class="hook-item">Hook3<br>implementation-notes.md created/updated</div>
+    <div style="flex:0 0 20px"></div>
+    <div class="hook-item">Hook4<br>test-cases.md created/updated</div>
+    <div style="flex:0 0 20px"></div>
+    <div class="hook-item">Hook5<br>review-report.md created/updated</div>
+    <div style="flex:0 0 20px"></div>
+    <div style="flex:0 0 120px"></div>
+  </div>
+
+  <!-- BOTTOM SECTIONS -->
+  <div class="bottom-grid">
+
+    <!-- Artifacts Structure -->
+    <div class="info-box box-gray">
+      <h4 style="color:#424242;">📁 Artifacts Structure (Per Ticket)</h4>
+      <div style="font-family:monospace; font-size:9px; line-height:1.6;">
+        /specs/&lt;ticket-id&gt;/<br>
+        &nbsp;&nbsp;├── requirements.md<br>
+        &nbsp;&nbsp;├── context-analysis.md<br>
+        &nbsp;&nbsp;├── design.md<br>
+        &nbsp;&nbsp;├── tasks.md<br>
+        &nbsp;&nbsp;├── implementation-notes.md<br>
+        &nbsp;&nbsp;├── test-cases.md<br>
+        &nbsp;&nbsp;├── review-report.md<br>
+        &nbsp;&nbsp;├── security-audit.md<br>
+        &nbsp;&nbsp;├── vulnerability-fixes.md<br>
+        &nbsp;&nbsp;├── final-summary.md<br>
+        &nbsp;&nbsp;└── spec-manifest.json
+      </div>
+    </div>
+
+    <!-- Agent 2 Skills Library -->
+    <div class="info-box box-teal">
+      <h4 style="color:#004d40;">Agent 2 Skills Library (examples)</h4>
+      <div class="skills-grid">
+        <span class="skill-tag">mongo-operations.md</span>
+        <span class="skill-tag">validation-rules.md</span>
+        <span class="skill-tag">exception-handling.md</span>
+        <span class="skill-tag">async-processing.md</span>
+        <span class="skill-tag">caching-strategy.md</span>
+        <span class="skill-tag">transaction-management.md</span>
+        <span class="skill-tag">code-optimization.md</span>
+        <span class="skill-tag">file-handling.md</span>
+        <span class="skill-tag">logging-strategy.md</span>
+        <span class="skill-tag">design-patterns.md</span>
+      </div>
+      <p style="margin-top:6px; font-size:9px; font-style:italic;">Agent2 selects skills based on requirement context</p>
+    </div>
+
+    <!-- Shared Steering Layer -->
+    <div class="info-box box-navy">
+      <h4 style="color:#1a237e;">Shared Steering Layer (Read by All Agents)</h4>
+      <div class="steering-grid">
+        <span class="steering-item">product.md</span>
+        <span class="steering-item">security-policies.md</span>
+        <span class="steering-item">coding-standards.md</span>
+        <span class="steering-item">review-checklist.md</span>
+        <span class="steering-item">springboot-patterns.md</span>
+        <span class="steering-item">jira-analysis-rules.md</span>
+        <span class="steering-item">testing-standards.md</span>
+        <span class="steering-item"></span>
+      </div>
+      <p style="margin-top:6px; font-size:9px; font-style:italic; text-align:center;">Provides common knowledge, standards, architecture and governance to all agents</p>
+    </div>
+
+    <!-- External Integrations -->
+    <div class="info-box box-dark-blue">
+      <h4 style="color:#0d47a1;">External Integrations (MCP / Tools)</h4>
+      <ul>
+        <li>🔗 <strong>Jira MCP</strong> – Read tickets, comments, attachments</li>
+        <li>🐙 <strong>GitHub MCP</strong> – Read code, PRs, commits</li>
+        <li>📁 <strong>FileSystem MCP</strong> – Read/Write artifacts</li>
+        <li>🧪 <strong>Test Runner MCP</strong> – Execute tests</li>
+        <li>🔍 <strong>SonarQube / Semgrep MCP</strong> – Security &amp; quality scans</li>
+        <li>🏗️ <strong>Maven / Build MCP</strong> – Build validation</li>
+      </ul>
+    </div>
+
+  </div><!-- /bottom-grid -->
+
+  <!-- 3-col row -->
+  <div class="bottom-grid-3">
+
+    <!-- Key Benefits -->
+    <div class="info-box box-green">
+      <h4 style="color:#1b5e20;">⭐ Key Benefits</h4>
+      <ul>
+        <li>Structured &amp; controlled SDLC automation</li>
+        <li>Better requirement understanding</li>
+        <li>High quality implementation</li>
+        <li>Comprehensive test coverage</li>
+        <li>Independent review &amp; security validation</li>
+        <li>Full audit trail per ticket</li>
+        <li>Reusable &amp; extensible framework</li>
+        <li>Reduces manual effort &amp; rework</li>
+        <li>Faster delivery with confidence</li>
+      </ul>
+    </div>
+
+    <!-- Human Control Checkpoints -->
+    <div class="info-box box-orange">
+      <h4 style="color:#bf360c;">👤 Human Control Checkpoints</h4>
+      <div class="checkpoint-grid">
+        <div class="cp-item"><div class="cp-dot" style="background:#1565c0;"></div><div><strong>After Agent1</strong><br>Validate requirement understanding</div></div>
+        <div class="cp-item"><div class="cp-dot" style="background:#00695c;"></div><div><strong>After Agent2</strong><br>Review implementation (optional)</div></div>
+        <div class="cp-item"><div class="cp-dot" style="background:#4a148c;"></div><div><strong>After Agent4</strong><br>Approve review findings &amp; actions</div></div>
+        <div class="cp-item"><div class="cp-dot" style="background:#c62828;"></div><div><strong>After Agent5</strong><br>Approve security clearance</div></div>
+        <div class="cp-item" style="grid-column: span 2"><div class="cp-dot" style="background:#2e7d32;"></div><div><strong>Final</strong><br>Approve final summary &amp; allow merge</div></div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="info-box box-gray">
+      <h4 style="color:#424242;">Legend</h4>
+      <div class="legend-item"><div class="legend-dot" style="background:#1565c0;"></div> Blue — Discovery &amp; Understanding (Agent1)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00695c;"></div> Teal — Implementation (Agent2)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e65100;"></div> Orange — Testing (Agent3)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4a148c;"></div> Purple — Review (Agent4)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c62828;"></div> Red — Security (Agent5)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#795548;"></div> Document / Artifact</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#546e7a;"></div> Process / Step</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f57f17;"></div> Auto Trigger (Hook)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#388e3c;"></div> Human Approval Point</div>
+    </div>
+
+  </div>
+
+  <!-- Overall End State -->
+  <div style="background:#e8f5e9; border:1px solid #2e7d32; border-radius:8px; padding:10px; margin-bottom:10px;">
+    <div style="text-align:center; font-weight:700; font-size:11px; color:#1b5e20; margin-bottom:8px; text-transform:uppercase;">Overall End State</div>
+    <div style="text-align:center; font-size:10px; color:#2e7d32; margin-bottom:10px;">A fully reviewed, tested, secure and audit-traceable implementation ready for merge/deployment.</div>
+    <div class="end-state">
+      <div class="end-step">🔍<br>Understand</div>
+      <div class="end-arrow">→</div>
+      <div class="end-step">&lt;/&gt;<br>Implement</div>
+      <div class="end-arrow">→</div>
+      <div class="end-step">🧪<br>Test</div>
+      <div class="end-arrow">→</div>
+      <div class="end-step">📋<br>Review</div>
+      <div class="end-arrow">→</div>
+      <div class="end-step">🔒<br>Secure</div>
+      <div class="end-arrow">→</div>
+      <div class="end-deploy">🚀 Deploy</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

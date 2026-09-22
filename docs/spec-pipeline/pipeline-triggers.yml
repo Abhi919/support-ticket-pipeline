@@ -1,0 +1,85 @@
+# Unified spec-driven pipeline — hook handoff map
+# docs/spec-pipeline/PIPELINE.md
+
+version: 4
+name: unified-spec-pipeline
+
+stages:
+  - id: 0
+    name: bootstrap
+    command: ./scripts/spec-bootstrap.sh <ID>
+
+  - id: 1
+    name: specification
+    agent: agent-1-ticket-context
+    hook_milestone: specs/*/test-strategy.md
+    next: 1b
+
+  - id: 1b
+    name: stakeholder_approach
+    agent: agent-1b-stakeholder-approach
+    output: approach-document.html
+    hook_milestone: specs/*/approach-document.html
+    mr_gate: mr-gate-01-agent1.md
+    next: 2
+
+  - id: 2
+    name: plan_and_implementation
+    agent: agent-2-implementation
+    hook_hint: specs/*/implementation-notes.md
+    next: 2b
+
+  - id: 2b
+    name: implementation_documentation
+    agent: agent-2b-implementation-docs
+    outputs: [technical-documentation.html, deployment-details.md]
+    hook_milestone: specs/*/technical-documentation.html
+    next: 2c
+
+  - id: 2c
+    name: functional_completeness
+    agent: agent-2c-functional-verification
+    output: functional-completeness-report.md
+    hook_milestone: specs/*/functional-completeness-report.md
+    gate: pass_required
+    mr_gate: mr-gate-02-agent2.md
+    fail_loop: 2
+    next: 3
+
+  - id: 3
+    name: testing
+    agent: agent-3-testing
+    hook_milestone: specs/*/test-cases.md
+    mr_gate: mr-gate-03-agent3.md
+    next: 4
+
+  - id: 4
+    name: review
+    agent: agent-4-review
+    hook_milestone: specs/*/review-report.md
+    mr_gate: mr-gate-04-agent4.md
+    fix_loop: 2
+    next: 5
+
+  - id: 5
+    name: security
+    agent: agent-5-security
+    hook_milestone: specs/*/security-audit.md
+    mr_gate: mr-gate-05-agent5.md
+    fix_loop: 2
+    next: 6
+
+  - id: 6
+    name: final
+    artifact: final-summary.md
+
+cursor:
+  rules: .cursor/rules/spec-pipeline.mdc
+  hooks: .cursor/hooks.json
+  commands:
+    review_spec: .cursor/commands/review-spec.md
+    verify_functional: .cursor/commands/verify-functional-completeness.md
+    generate_tests: .cursor/commands/generate-tests.md
+    review_code: .cursor/commands/review-code.md
+
+artifacts_root: specs/<ticket-id>/

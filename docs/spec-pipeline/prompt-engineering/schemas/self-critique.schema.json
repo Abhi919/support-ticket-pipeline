@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SelfCritiqueResult",
+  "type": "object",
+  "required": ["ticketId", "stage", "passed", "findings"],
+  "properties": {
+    "ticketId": { "type": "string" },
+    "stage": { "type": "string" },
+    "passed": { "type": "boolean" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "message", "artifact"],
+        "properties": {
+          "severity": { "enum": ["blocker", "major", "minor"] },
+          "message": { "type": "string" },
+          "artifact": { "type": "string" },
+          "suggestedFix": { "type": "string" }
+        }
+      }
+    }
+  }
+}

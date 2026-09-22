@@ -1,0 +1,8 @@
+{
+  "specstory.autoSave.enabled": true,
+  "specstory.providers.enabled": {
+    "Cursor IDE": true
+  },
+  "specstory.showDeveloperTools": false,
+  "specstory.cloudSync.enabled": "never"
+}

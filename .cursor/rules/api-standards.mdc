@@ -1,0 +1,15 @@
+---
+description: REST API standards — align code with api-contract.md
+globs: "**/*Controller.java"
+alwaysApply: false
+---
+
+# API standards
+
+- Paths and methods must match `specs/<TICKET>/api-contract.md` for the active work item.
+- Use consistent error body: code, message, optional field errors (document in contract).
+- Pagination/filter/query params as specified in contract; no silent renames.
+- Version breaking changes only with spec revision + `spec-diff.md` entry.
+- OpenAPI/Swagger optional; `api-contract.md` is source of truth during spec-driven work.
+
+See `docs/spec-pipeline/steering/` and the active work item `api-contract.md`.

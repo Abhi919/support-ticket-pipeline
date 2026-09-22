@@ -1,0 +1,16 @@
+---
+description: Testing standards for Java/Spring work
+globs: "**/*{Test,Tests}.java"
+alwaysApply: false
+---
+
+# Testing guidelines
+
+- Unit tests for domain logic; `@SpringBootTest` / slice tests for wiring.
+- Name tests for behavior: `closedToOpenTransition_isRejected`.
+- Map tests to `TC-###` in `test-cases.md` and `AC-###` in requirements.
+- State machines: integration tests for **valid** and **invalid** transitions.
+- Run `mvn test` (or module-specific command) before MR; record command in PR.
+- Do not assert on log output unless logs are contractual.
+
+See `docs/spec-pipeline/steering/testing-standards.md`.

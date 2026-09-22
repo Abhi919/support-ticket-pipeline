@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical documentation — {{TICKET_ID}}</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --accent: #38bdf8; --code: #94a3b8; }
+    body { font-family: ui-monospace, monospace; background: var(--bg); color: var(--text); line-height: 1.5; margin: 0; padding: 2rem; max-width: 1000px; margin-inline: auto; }
+    h1, h2 { color: var(--accent); }
+    h1 { font-family: system-ui, sans-serif; }
+    section { background: var(--card); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+    code, pre { background: #0f172a; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #334155; padding: 0.5rem; text-align: left; }
+    th { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1>Technical documentation — {{TICKET_ID}}</h1>
+  <p><code>Generated {{ISO_DATE}}</code></p>
+
+  <section>
+    <h2>Services &amp; modules</h2>
+    <table>
+      <tr><th>Service</th><th>Module / package</th><th>Responsibility</th></tr>
+      <tr><td></td><td></td><td></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Persistence</h2>
+    <table>
+      <tr><th>Store</th><th>Collection / table</th><th>Entity</th><th>Notes</th></tr>
+      <tr><td>MongoDB</td><td></td><td></td><td></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Messaging</h2>
+    <table>
+      <tr><th>Broker</th><th>Exchange / queue</th><th>Producer</th><th>Consumer</th></tr>
+      <tr><td>RabbitMQ</td><td></td><td></td><td></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Schedulers &amp; jobs</h2>
+    <ul><li></li></ul>
+  </section>
+
+  <section>
+    <h2>Scripts &amp; migrations</h2>
+    <ul><li><code>path/to/script</code> — purpose</li></ul>
+  </section>
+
+  <section>
+    <h2>Configuration</h2>
+    <table>
+      <tr><th>Property / env</th><th>Service</th><th>Description</th></tr>
+      <tr><td></td><td></td><td></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Implementation map (FUN → code)</h2>
+    <table>
+      <tr><th>FUN-ID</th><th>Key classes / files</th></tr>
+      <tr><td>FUN-001</td><td></td></tr>
+    </table>
+  </section>
+</body>
+</html>

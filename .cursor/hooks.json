@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "scripts/cursor/spec-pipeline-post-write.py",
+        "matcher": "Write",
+        "timeout": 5
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "scripts/cursor/specstory-session-end.py",
+        "timeout": 10
+      }
+    ]
+  }
+}

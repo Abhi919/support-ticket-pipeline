@@ -1,0 +1,25 @@
+---
+description: Unified spec-driven SDLC pipeline — one flow for all work items
+alwaysApply: true
+---
+
+# Unified spec-driven SDLC pipeline
+
+Follow **`docs/spec-pipeline/PIPELINE.md`**.
+
+## Stage summary
+
+| Stage | Agent | Key output | MR |
+|-------|-------|------------|-----|
+| 1 | Specification | Spec files + `FUN-###` flows | |
+| 1b | Stakeholder approach | `approach-document.html` | Gate 01 |
+| 2 | Plan + implement | `tasks.md`, code | |
+| 2b | Implementation docs | `technical-documentation.html`, `deployment-details.md` | |
+| 2c | Functional verify | `functional-completeness-report.md` must be **pass** | Gate 02 |
+| 3 | Testing | `test-cases.md` | Gate 03 |
+| 4 | Review | `review-report.md` | Gate 04 |
+| 5 | Security | `security-audit.md` | Gate 05 |
+
+Agent 2c uses `requirements.md` **Functionality flows** as source of truth. Do not start Agent 3 if 2c is `fail`.
+
+Never prompt *"build the complete application."* Log prompts per `AGENTS.md`.

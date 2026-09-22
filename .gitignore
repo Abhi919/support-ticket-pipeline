@@ -1,0 +1,35 @@
+# Dependencies & build
+node_modules/
+.tools/
+.m2/
+**/target/
+**/dist/
+**/build/
+*.class
+*.jar
+!**/src/**/resources/**
+
+# Local data & runtime
+support-ticket-service/data/
+*.log
+*.pid
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+**/credentials*.json
+**/*secret*
+**/*password*
+
+# SpecStory local tooling (keep history)
+.specstory/cli/

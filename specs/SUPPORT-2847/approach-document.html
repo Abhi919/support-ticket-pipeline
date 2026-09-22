@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Approach — SUPPORT-2847</title>
+  <style>
+    :root { --bg: #f8fafc; --card: #fff; --text: #1e293b; --accent: #2563eb; --muted: #64748b; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 2rem; max-width: 900px; margin-inline: auto; }
+    h1 { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; color: #334155; }
+    .card { background: var(--card); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #e2e8f0; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f1f5f9; }
+    .flow { background: #eff6ff; border-left: 4px solid var(--accent); padding: 1rem; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Development approach — SUPPORT-2847</h1>
+  <p class="muted">Stakeholder summary · 2026-09-13 · Status: approved</p>
+
+  <div class="card">
+    <h2>Executive summary</h2>
+    <p>We will deliver a small support ticket platform: a Spring Boot API backed by a persistent database and a React web UI. Tickets move through a fixed lifecycle (open → in progress → resolved → closed, with cancellation paths). The backend rejects invalid status jumps so teams cannot accidentally reopen closed work.</p>
+  </div>
+
+  <div class="card">
+    <h2>Problem &amp; goals</h2>
+    <p>Internal teams need a single place to log issues, assign owners, discuss via comments, and close work through a clear workflow. Data must survive restarts; the API must validate input and enforce lifecycle rules.</p>
+  </div>
+
+  <div class="card">
+    <h2>Proposed approach</h2>
+    <ol>
+      <li>Write full specification (requirements, API contract, state machine) before any code.</li>
+      <li>Implement the API in small tasks (entities → state machine → endpoints → tests).</li>
+      <li>Build the React UI against the contract with meaningful error display.</li>
+      <li>Verify each functionality flow in code before writing formal test cases.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Architecture overview</h2>
+    <pre>
+Browser (React)  --REST JSON-->  Spring Boot API  --JPA-->  H2 file / PostgreSQL
+                                      |
+                               TicketStateMachine
+    </pre>
+  </div>
+
+  <div class="card">
+    <h2>Key functionality flows</h2>
+    <div class="flow">
+      <strong>FUN-001 — Create ticket</strong>
+      <p>User submits the create form → API stores a new ticket with status <em>Open</em> → ticket appears in the list.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-002 — List &amp; search</strong>
+      <p>User opens the home page → API returns tickets, optionally filtered by keyword and status → table updates.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-003 — View &amp; edit ticket</strong>
+      <p>User opens a ticket → loads details → saves field changes → API persists updates.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-004 — Change assignee</strong>
+      <p>User updates assignee on the detail form → same save action updates ownership.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-005 — Add comment</strong>
+      <p>User posts a comment → API appends to the ticket thread → detail view refreshes.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-006 — Status transition</strong>
+      <p>User picks an allowed next step → API validates via state machine → status updates.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-007 — Reject bad transition</strong>
+      <p>Illegal move (e.g. closed → open) → API returns conflict → UI shows error banner.</p>
+    </div>
+    <div class="flow">
+      <strong>FUN-008 — Validation errors</strong>
+      <p>Invalid input → API returns field errors → UI surfaces readable messages.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Data &amp; integrations</h2>
+    <table>
+      <tr><th>System</th><th>Role</th></tr>
+      <tr><td>H2 file database</td><td>Development persistence</td></tr>
+      <tr><td>PostgreSQL (optional)</td><td>Production target</td></tr>
+      <tr><td>React SPA</td><td>User interface</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Risks &amp; mitigations</h2>
+    <ul>
+      <li><strong>Lifecycle bypass</strong> — dedicated status endpoint + state machine tests.</li>
+      <li><strong>Data loss</strong> — file-based H2, not in-memory only.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Out of scope</h2>
+    <ul>
+      <li>Login and role-based access</li>
+      <li>Email notifications</li>
+      <li>File attachments</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Next steps</h2>
+    <ol>
+      <li>MR gate 01 approval on specification package</li>
+      <li>Implementation tasks T-001 through T-009</li>
+      <li>Functional verification (Agent 2c) then test cases</li>
+    </ol>
+  </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# OpenSpec project config — integrated with docs/spec-pipeline/ unified workflow
+# Refresh generated Cursor skills/commands: npm run openspec:update
+
+schema: spec-driven
+
+context: |
+  This repo uses a unified Cursor spec pipeline (docs/spec-pipeline/PIPELINE.md).
+  Per-ticket artifacts live under specs/<WORK-ITEM-ID>/ (requirements, FUN-### flows, tasks).
+  OpenSpec changes under openspec/changes/ are bridged from spec-bootstrap.sh.
+  Java 21, Spring Boot 3.x. Do not prompt "build the complete application."
+
+  Bridge rules:
+  - proposal.md / design.md / tasks.md in a change folder may mirror specs/<ID>/ files
+  - Delta specs in openspec/changes/<change>/specs/ use ADDED/MODIFIED/REMOVED sections
+  - Archive merges into openspec/specs/<domain>/spec.md after MR approval
+
+rules:
+  specs:
+    - Use requirement/scenario format for behavioral specs
+    - Cross-reference FUN-### from specs/<ID>/requirements.md when applicable
+  tasks:
+    - Use T-### IDs aligned with specs/<ID>/tasks.md
+  design:
+    - Reference services, collections, queues explicitly for microservice flows
+
+githubCopilot:
+  cloudAgent: false

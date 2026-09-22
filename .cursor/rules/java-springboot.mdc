@@ -1,0 +1,15 @@
+---
+description: Java and Spring Boot conventions for AI-assisted development
+globs: "**/*.{java,xml,properties,yml,yaml}"
+alwaysApply: false
+---
+
+# Java / Spring Boot guidelines
+
+- Target **Java 21** and **Spring Boot 3.x** unless the module README states otherwise.
+- Constructor injection; avoid field injection.
+- REST: correct HTTP verbs and status codes; validate input with Jakarta Validation.
+- Persistence: explicit transactions; document schema changes in `data-model.md`.
+- Errors: consistent problem response shape; no stack traces to clients in production paths.
+- Follow `docs/spec-pipeline/steering/springboot-patterns.md` and existing module layout.
+- Implement only the current `T-###` task; trace commits to AC IDs.

@@ -1,0 +1,11 @@
+{
+  "ticketId": "SUPPORT-2847",
+  "stage": "agent1",
+  "passed": true,
+  "findings": [
+    { "severity": "blocker", "item": "FUN flows defined", "status": "resolved" },
+    { "severity": "blocker", "item": "State machine documented with 409 behavior", "status": "resolved" },
+    { "severity": "minor", "item": "Auth deferred to v2", "status": "accepted" }
+  ],
+  "checkedAt": "2026-09-13T14:30:00+05:30"
+}

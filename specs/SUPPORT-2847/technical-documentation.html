@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SUPPORT-2847 — Technical documentation</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; line-height: 1.6; }
+    code { background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #e2e8f0; padding: 0.5rem; text-align: left; }
+    th { background: #f8fafc; }
+  </style>
+</head>
+<body>
+  <h1>Technical documentation — SUPPORT-2847</h1>
+  <p>Agent 2b · Implementation complete · Branch <code>spec/SUPPORT-2847/stage-02-agent2</code></p>
+
+  <h2>Services</h2>
+  <table>
+    <tr><th>Module</th><th>Stack</th><th>Entry</th></tr>
+    <tr><td>support-ticket-service</td><td>Java 21, Spring Boot 3.3.5, JPA</td><td><code>SupportTicketApplication</code></td></tr>
+    <tr><td>support-ticket-ui</td><td>React 18, Vite, TypeScript</td><td><code>src/main.tsx</code></td></tr>
+  </table>
+
+  <h2>Persistence</h2>
+  <ul>
+    <li>Dev: H2 file <code>./data/tickets</code></li>
+    <li>Tables: <code>tickets</code>, <code>comments</code> (see <code>data-model.md</code>)</li>
+  </ul>
+
+  <h2>API surface</h2>
+  <p><code>/api/tickets</code> — see <code>api-contract.md</code>. Status changes isolated on <code>PUT /{id}/status</code>.</p>
+
+  <h2>FUN → code map</h2>
+  <table>
+    <tr><th>FUN</th><th>Backend</th><th>Frontend</th></tr>
+    <tr><td>FUN-001</td><td><code>TicketController#create</code></td><td><code>CreateTicketPage</code></td></tr>
+    <tr><td>FUN-002</td><td><code>TicketRepository#findByFilters</code></td><td><code>TicketListPage</code></td></tr>
+    <tr><td>FUN-003</td><td><code>TicketController#update</code></td><td><code>TicketDetailPage</code> save</td></tr>
+    <tr><td>FUN-004</td><td><code>UpdateTicketRequest.assignee</code></td><td>Assignee field</td></tr>
+    <tr><td>FUN-005</td><td><code>TicketController#addComment</code></td><td>Comment form</td></tr>
+    <tr><td>FUN-006</td><td><code>TicketStateMachine</code></td><td>Status action buttons</td></tr>
+    <tr><td>FUN-007</td><td><code>GlobalExceptionHandler</code> 409</td><td><code>ErrorBanner</code></td></tr>
+    <tr><td>FUN-008</td><td>Validation 400</td><td><code>formatProblemMessage</code></td></tr>
+  </table>
+
+  <h2>Configuration</h2>
+  <ul>
+    <li><code>application.properties</code> — datasource, CORS origins</li>
+    <li><code>vite.config.ts</code> — dev proxy <code>/api</code> → :8080</li>
+  </ul>
+
+  <h2>Tests (Agent 3 input)</h2>
+  <p>12 automated tests: <code>TicketStateMachineTest</code>, <code>TicketStateMachineIntegrationTest</code>, <code>TicketControllerIntegrationTest</code>.</p>
+</body>
+</html>
